@@ -6,9 +6,7 @@ package com.fernandes.damien.barhelp;
 
 public class Cafe extends Conso {
     public Cafe() {
+        super(0.70);
         this.name = "Café";
-        this.prix=0.70;
     }
-    
-
 }

@@ -6,7 +6,7 @@ package com.fernandes.damien.barhelp;
 
 public class Biere extends Conso {
     public Biere(String name) {
+        super(1.50);
         this.name=name;
-        this.prix=1.50;
     }
 }

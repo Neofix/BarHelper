@@ -6,8 +6,14 @@ package com.fernandes.damien.barhelp;
 
 public abstract class Conso {
     protected String name;
-    protected double prix;
+    protected final double prix;
     protected String desc;
+
+    public Conso(double prix) {
+        this.prix = prix;
+    }
+
+    protected String imgPath;
 
     public String getDesc() {
         return desc;

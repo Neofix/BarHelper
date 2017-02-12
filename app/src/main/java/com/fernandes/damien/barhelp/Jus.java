@@ -6,7 +6,7 @@ package com.fernandes.damien.barhelp;
 
 public class Jus extends Conso {
     public Jus(String name) {
+        super(1);
         this.name = name;
-        this.prix = 1;
     }
 }
