@@ -8,7 +8,7 @@ public abstract class Conso {
     protected String name;
     protected final double prix;
     protected String desc;
-    protected String imgPath;
+    protected int imgPath;
 
 
 
@@ -20,7 +20,7 @@ public abstract class Conso {
         return desc;
     }
 
-    public String getImgPath() { return imgPath; }
+    public int getImgPath() { return imgPath; }
 
     public String getName() {
         return name;
