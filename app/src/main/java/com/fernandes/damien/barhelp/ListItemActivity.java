@@ -12,6 +12,9 @@ public class ListItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_item);
+        listItem.add(new Cafe());
+        listItem.add(new Biere());
+        listItem.add(new Soda());
 
     }
 }
