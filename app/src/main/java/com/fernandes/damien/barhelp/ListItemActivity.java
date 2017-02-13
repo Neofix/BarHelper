@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class ListItemActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
     private ArrayList<Conso> listItem = new ArrayList<>();
     private GridView listConso;
+    private ArrayList<Conso> panier = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        
+        panier.add(listItem.get(position));
+        Toast.makeText(getApplicationContext(), "1 "+ listItem.get(position).getName()+" ajouté au panier", Toast.LENGTH_SHORT).show();
     }
 }
