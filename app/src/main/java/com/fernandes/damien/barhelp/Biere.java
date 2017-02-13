@@ -6,12 +6,8 @@ package com.fernandes.damien.barhelp;
 
 public class Biere extends Conso {
     public Biere() {
-        this("");
-    }
-
-    public Biere(String name) {
         super(1.50);
-        this.name=name;
+        this.name="Bière";
         this.imgPath = R.drawable.biere;
     }
 }
