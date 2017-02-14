@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,14 +23,20 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ListItemActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
+public class ListItemActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener{
     private ArrayList<Conso> listItem = new ArrayList<>();
+    private TextView textViewSomme;
     private GridView listConso;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private HashMap<Conso, Integer> nbOccurence = new HashMap<>();
+    private ListView listRes;
     private TextView text;
     private ActionBarDrawerToggle drawerToggle;
+    private Button buttonPaye;
+    private ArrayList<Conso> consoList= new ArrayList<>();
+    private ArrayList<Integer> nbList= new ArrayList<>();
+    private Double somme = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +48,11 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
         listItem.add(new Soda("Soda"));
 
         listConso = (GridView) findViewById(R.id.gridview);
+        listRes = (ListView) findViewById(R.id.listViewRes);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        buttonPaye = (Button) findViewById(R.id.buttonPaye);
+        textViewSomme = (TextView) findViewById(R.id.textViewSomme);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,10 +76,11 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
         drawerLayout.addDrawerListener(drawerToggle);
 
         listConso.setOnItemClickListener(this);
-
+        buttonPaye.setOnClickListener(this);
 
         for(Conso lesConso : listItem)
             nbOccurence.put(lesConso, 0);
+        RefreshData(nbOccurence);
 
         text = (TextView) findViewById(R.id.textView);
         text.setText("");
@@ -90,7 +103,7 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Double somme = 0.0;
+
         Conso ItemClicked = listItem.get(position);
         String Texty ="";
 
@@ -99,23 +112,25 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
         if(nbOccurence.containsKey(nameClass))
             nbOccurence.put(nameClass, nbOccurence.get(nameClass) + 1);
 
-
-        for(Map.Entry<Conso, Integer> entry : nbOccurence.entrySet())
+        /*for(Map.Entry<Conso, Integer> entry : nbOccurence.entrySet())
         {
             Integer nombre = entry.getValue();
             Conso objet = entry.getKey();
-            if(nombre>0) {
-                Texty = Texty + nombre + " " + objet.getName() + "\n";
-                somme = somme + objet.getPrix() * nombre;
-            }
-        }
-        Texty=Texty+"Somme Total : "+String.format("%.2f", somme)+ " €";
+            consoList.add(objet);
+            nbList.add(nombre);
+            somme = somme + objet.getPrix() * nombre;
+        }*/
 
-        text.setText(Texty);
 
+        RefreshData(nbOccurence);
+        listRes.setAdapter(new ListViewAdapter(getApplicationContext(),R.layout.activity_list_item, consoList, nbList));
+
+
+        textViewSomme.setText(String.format("%.2f", somme)+ " €");
         Toast.makeText(getApplicationContext(), "1 "+ listItem.get(position).getName()+" ajouté au panier",Toast.LENGTH_SHORT).show();
 
     }
+
 
     private void afficherCacherToolbar() {
         if(toolbar.getAlpha() == 1){ //si alpha==1 alors elle est affichee
@@ -133,6 +148,33 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
                     .alpha(1) //la rendre visible
                     .translationY(0) //retour à la position d'origine
                     .start();
+        }
+    }
+    private void RefreshData(HashMap<Conso,Integer> data){
+        somme=0.0;
+        consoList = new ArrayList<>();
+        nbList = new ArrayList<>();
+        for(Map.Entry<Conso, Integer> entry : nbOccurence.entrySet())
+        {
+            Integer nombre = entry.getValue();
+            Conso objet = entry.getKey();
+            consoList.add(objet);
+            nbList.add(nombre);
+            somme = somme + objet.getPrix() * nombre;
+        }
+        textViewSomme.setText(String.format("%.2f", somme)+ " €");
+        listRes.setAdapter(new ListViewAdapter(getApplicationContext(),R.layout.activity_list_item, consoList, nbList));
+    }
+    @Override
+    public void onClick(View v) {
+        if(v.getId()==R.id.buttonPaye)
+        {
+            for(Map.Entry<Conso, Integer> entry : nbOccurence.entrySet())
+            {
+                Conso objet = entry.getKey();
+                nbOccurence.put(objet, 0);
+            }
+            RefreshData(nbOccurence);
         }
     }
 }
