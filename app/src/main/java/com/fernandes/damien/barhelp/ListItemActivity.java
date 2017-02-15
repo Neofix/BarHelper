@@ -1,9 +1,12 @@
 package com.fernandes.damien.barhelp;
 
+import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.preference.DialogPreference;
 import android.support.annotation.IntegerRes;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +27,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ListItemActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener{
+public class ListItemActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener{
     private ArrayList<Conso> listItem = new ArrayList<>();
     private TextView textViewSomme;
     private GridView listConso;
@@ -76,6 +80,7 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
         drawerLayout.addDrawerListener(drawerToggle);
 
         listConso.setOnItemClickListener(this);
+        listConso.setOnItemLongClickListener(this);
         buttonPaye.setOnClickListener(this);
 
         for(Conso lesConso : listItem)
@@ -131,7 +136,6 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
 
     }
 
-
     private void afficherCacherToolbar() {
         if(toolbar.getAlpha() == 1){ //si alpha==1 alors elle est affichee
 
@@ -176,5 +180,31 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
             }
             RefreshData(nbOccurence);
         }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        NumberPicker myNumberPicker = new NumberPicker(this);
+        myNumberPicker.setMinValue(0);
+        NumberPicker.OnValueChangeListener myValChangedListener = new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+
+            }
+        };
+        myNumberPicker.setOnValueChangedListener(myValChangedListener);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this).setView(myNumberPicker);
+        builder.setTitle("Quantité désirée")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.show();
+
+
+        return true;
     }
 }
