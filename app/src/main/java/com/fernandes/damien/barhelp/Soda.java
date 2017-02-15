@@ -10,7 +10,7 @@ public class Soda extends Conso {
     }
 
     public Soda(String name) {
-        super(1.50);
+        super(1);
         this.name=name;
         this.imgPath = R.drawable.soda;
     }

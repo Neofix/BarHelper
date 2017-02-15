@@ -109,13 +109,9 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        Conso ItemClicked = listItem.get(position);
+        Conso nameClass = listItem.get(position);
         String Texty ="";
-
-
-        Conso nameClass = ItemClicked;
-        if(nbOccurence.containsKey(nameClass))
-            nbOccurence.put(nameClass, nbOccurence.get(nameClass) + 1);
+        addToHashMap(nameClass, 1);
 
         /*for(Map.Entry<Conso, Integer> entry : nbOccurence.entrySet())
         {
@@ -128,12 +124,16 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
 
 
         RefreshData(nbOccurence);
-        listRes.setAdapter(new ListViewAdapter(getApplicationContext(),R.layout.activity_list_item, consoList, nbList));
 
 
         textViewSomme.setText(String.format("%.2f", somme)+ " €");
         Toast.makeText(getApplicationContext(), "1 "+ listItem.get(position).getName()+" ajouté au panier",Toast.LENGTH_SHORT).show();
 
+    }
+
+    private void addToHashMap(Conso laConso, int quantite){
+        if(nbOccurence.containsKey(laConso))
+            nbOccurence.put(laConso, nbOccurence.get(laConso) + quantite);
     }
 
     private void afficherCacherToolbar() {
@@ -169,6 +169,7 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
         textViewSomme.setText(String.format("%.2f", somme)+ " €");
         listRes.setAdapter(new ListViewAdapter(getApplicationContext(),R.layout.activity_list_item, consoList, nbList));
     }
+
     @Override
     public void onClick(View v) {
         if(v.getId()==R.id.buttonPaye)
@@ -184,9 +185,12 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        NumberPicker myNumberPicker = new NumberPicker(this);
-        myNumberPicker.setMinValue(0);
+        final Conso nameClass = listItem.get(position);
+        final NumberPicker myNumberPicker = new NumberPicker(this);
+        myNumberPicker.setMinValue(1);
+        myNumberPicker.setMaxValue(50);
         NumberPicker.OnValueChangeListener myValChangedListener = new NumberPicker.OnValueChangeListener() {
+
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 
@@ -199,9 +203,16 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        addToHashMap(nameClass, myNumberPicker.getValue());
+                        RefreshData(nbOccurence);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
                     }
-                });
+        });
         builder.show();
 
 
