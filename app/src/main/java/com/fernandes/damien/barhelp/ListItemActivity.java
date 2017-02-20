@@ -80,7 +80,71 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
         drawerLayout.addDrawerListener(drawerToggle);
 
         listConso.setOnItemClickListener(this);
-        listConso.setOnItemLongClickListener(this);
+        listConso.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final Conso nameClass = listItem.get(position);
+                final NumberPicker myNumberPicker = new NumberPicker(ListItemActivity.this);
+                myNumberPicker.setMinValue(1);
+                myNumberPicker.setMaxValue(50);
+                NumberPicker.OnValueChangeListener myValChangedListener = new NumberPicker.OnValueChangeListener() {
+
+                    @Override
+                    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+
+                    }
+                };
+                myNumberPicker.setOnValueChangedListener(myValChangedListener);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ListItemActivity.this).setView(myNumberPicker);
+                builder.setTitle("Quantité désirée")
+                        .setMessage("Veuillez choisir la quantité de "+nameClass.getName()+" à ajouter :")
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                addToHashMap(nameClass, myNumberPicker.getValue());
+                                DisplayToast(nameClass, myNumberPicker.getValue());
+                                RefreshData(nbOccurence);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                builder.show();
+
+                return true;
+            }
+        });
+        listRes.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                final Conso nameClass = consoList.get(position);
+                Integer nombre = nbList.get(position);
+                AlertDialog.Builder builder = new AlertDialog.Builder(ListItemActivity.this);
+                builder.setTitle("Tout supprimé ?")
+                        .setMessage("Voulez-vous vraiment supprimer les "+nombre+" "+nameClass.getName()+" de la liste ?")
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                nbOccurence.put(nameClass, 0);
+                                RefreshData(nbOccurence);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                builder.show();
+
+                return true;
+            }
+        });
         buttonPaye.setOnClickListener(this);
 
         for(Conso lesConso : listItem)
@@ -109,9 +173,10 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        Conso nameClass = listItem.get(position);
-        String Texty ="";
-        addToHashMap(nameClass, 1);
+            Conso nameClass = listItem.get(position);
+            String Texty = "";
+            Integer nombre = 1;
+            addToHashMap(nameClass, nombre);
 
         /*for(Map.Entry<Conso, Integer> entry : nbOccurence.entrySet())
         {
@@ -123,11 +188,16 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
         }*/
 
 
-        RefreshData(nbOccurence);
+            RefreshData(nbOccurence);
 
 
-        textViewSomme.setText(String.format("%.2f", somme)+ " €");
-        Toast.makeText(getApplicationContext(), "1 "+ listItem.get(position).getName()+" ajouté au panier",Toast.LENGTH_SHORT).show();
+            textViewSomme.setText(String.format("%.2f", somme) + " €");
+            DisplayToast(nameClass, nombre);
+
+    }
+    private void DisplayToast(Conso laConso, Integer leNombre)
+    {
+        Toast.makeText(getApplicationContext(), leNombre+" "+ laConso.getName()+" ajouté au panier",Toast.LENGTH_SHORT).show();
 
     }
 
@@ -184,38 +254,7 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
     }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        final Conso nameClass = listItem.get(position);
-        final NumberPicker myNumberPicker = new NumberPicker(this);
-        myNumberPicker.setMinValue(1);
-        myNumberPicker.setMaxValue(50);
-        NumberPicker.OnValueChangeListener myValChangedListener = new NumberPicker.OnValueChangeListener() {
-
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-
-            }
-        };
-        myNumberPicker.setOnValueChangedListener(myValChangedListener);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this).setView(myNumberPicker);
-        builder.setTitle("Quantité désirée")
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        addToHashMap(nameClass, myNumberPicker.getValue());
-                        RefreshData(nbOccurence);
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-        });
-        builder.show();
-
-
-        return true;
+    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        return false;
     }
 }
