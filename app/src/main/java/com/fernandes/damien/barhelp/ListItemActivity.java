@@ -40,6 +40,12 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
     private Button buttonPaye;
     private ArrayList<Conso> consoList= new ArrayList<>();
     private ArrayList<Integer> nbList= new ArrayList<>();
+    private Conso CurrentConso = new Conso(0) {
+        @Override
+        public String getName() {
+            return "Empty";
+        }
+    };
     private Double somme = 0.0;
 
     @Override
@@ -143,6 +149,30 @@ public class ListItemActivity extends AppCompatActivity implements AdapterView.O
                 builder.show();
 
                 return true;
+            }
+        });
+
+        listRes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(CurrentConso.getName() == consoList.get(position).getName()) {
+                    Integer nombre = -1;
+                    addToHashMap(CurrentConso, nombre);
+                    RefreshData(nbOccurence);
+                    CurrentConso=new Conso(0) {
+                        @Override
+                        public String getName() {
+                            return "Empty";
+                        }
+                    };
+                }
+                else
+                {
+                    CurrentConso = consoList.get(position);
+                    Toast.makeText(getApplicationContext(), "Rappuyer pour supprimer 1 "+CurrentConso.getName(),Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
         buttonPaye.setOnClickListener(this);
